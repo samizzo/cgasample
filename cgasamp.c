@@ -1,3 +1,19 @@
+/*
+    Turbo C:
+        tcc cgasamp.c
+
+    Watcom 11:
+        wcl cgasamp.c
+
+    Keys:
+        Escape  - quit
+        0       - select palette 0 green/red/brown (video mode 4)
+        1       - select palette 1 cyan/magenta/light grey (video mode 4)
+        2       - select palette 2 cyan/red/light grey (video mode 5)
+        I       - toggle intensity palette
+        Up/Down - cycle the background colour through the 16 colours of the full CGA palette
+*/
+
 #include <dos.h>
 #include <mem.h>
 #include <conio.h>
