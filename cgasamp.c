@@ -18,6 +18,8 @@
 #include <mem.h>
 #include <conio.h>
 
+// #define VGA_COMPATIBLE
+
 enum Palette
 {
     Palette0 = 0,                           // bg/green/red/brown - only available in mode 4
@@ -72,9 +74,16 @@ char SetVideoMode(unsigned char mode)
 // Returns 1 if the video mode was changed, or 0 if not.
 char SetCGAPalette(enum Palette palette, char highIntensity, unsigned char backgroundColour)
 {
-    unsigned char value = 0;
     char modeChanged = 0;
-    
+    unsigned char value = 0;
+#if defined(VGA_COMPATIBLE)
+    union REGS regs;
+#endif
+
+#if defined(VGA_COMPATIBLE)
+    regs.h.ah = 0x0B; // set color palette
+#endif
+
     if (palette == Palette2)
     {
         // palette 2 requires mode 5
@@ -85,11 +94,24 @@ char SetCGAPalette(enum Palette palette, char highIntensity, unsigned char backg
         // Should be palette 0 or 1. These require mode 4
         modeChanged = SetVideoMode(VIDEO_MODE_320X200_4);
 
+#if defined(VGA_COMPATIBLE)
+        regs.h.bh = 0x01; // select palette
+        regs.h.bl = 0x00; // default to green/red/brown
+#endif
+
         if (palette == Palette1)
         {
+#if defined(VGA_COMPATIBLE)
+            regs.h.bl = 0x01; // select cyan/magenta/white
+#else
             // Select alternate palette
             value |= CGA_PALETTE_BIT;
+#endif
         }
+
+#if defined(VGA_COMPATIBLE)
+        int86(0x10, &regs, &regs);
+#endif
     }
 
     // Set background color
@@ -101,7 +123,13 @@ char SetCGAPalette(enum Palette palette, char highIntensity, unsigned char backg
         value |= CGA_PALETTE_INTENSITY_BIT;
     }
 
+#if defined(VGA_COMPATIBLE)
+    regs.h.bh = 0x00; // set background colour
+    regs.h.bl = value;
+    int86(0x10, &regs, &regs);
+#else
     outp(CGA_COLOR_SELECT_REGISTER, value);
+#endif
 
     return modeChanged;
 }
