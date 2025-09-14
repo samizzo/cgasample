@@ -15,3 +15,5 @@ Use the following keys:
 | Up/Down | cycle the background colour through the 16 colours of the full CGA palette |
 
 This talks directly to the CGA colour select register. Enable the #define `VGA_COMPATIBLE` to use interrupts to set the palette instead, which will make the program work correctly on EGA/VGA hardware.
+
+Note that video mode 5 (for palette 2) doesn't set the right palette on a VGA card; it will set the magenta palette. Set dosbox `machine` setting to `cga` to get accurate results.
