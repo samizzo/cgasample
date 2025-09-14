@@ -104,6 +104,7 @@ void SetPixel(unsigned int x, unsigned int y, unsigned char colour, unsigned cha
     // Now set the colour
     value |= (colour << pixelBitIndex);
 
+    // Store back into the buffer
     buffer[byteIndex] = value;
 }
 
@@ -135,18 +136,19 @@ void CopyBufferToVideoMemory(unsigned char* buffer)
     movedata(FP_SEG(buffer), FP_OFF(buffer), VIDEO_MEMORY_SEGMENT, 0, VIDEO_MEMORY_SIZE);
 }
 
+static unsigned char s_pattern[VIDEO_MEMORY_SIZE];
+
 int main()
 {
     enum Palette currentPalette = Palette0;
     unsigned char highIntensity = 0;
     unsigned char backgroundColour = 0;
-    unsigned char pattern[VIDEO_MEMORY_SIZE];
 
     printf("Initialising");
-    DrawPattern(pattern);
+    DrawPattern(s_pattern);
 
     SetCGAPalette(currentPalette, highIntensity, backgroundColour);
-    CopyBufferToVideoMemory(pattern);
+    CopyBufferToVideoMemory(s_pattern);
 
     while (1)
     {
@@ -211,7 +213,7 @@ int main()
             if (SetCGAPalette(currentPalette, highIntensity, backgroundColour))
             {
                 // Video mode changed, redraw the pattern because video memory may have been trashed
-                CopyBufferToVideoMemory(pattern);
+                CopyBufferToVideoMemory(s_pattern);
             }
         }
     }
