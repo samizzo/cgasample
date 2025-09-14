@@ -1,7 +1,7 @@
 CGA Sample
 ----------
 
-A simple program to demonstrate setting the three palettes on the CGA video card.
+A simple program to demonstrate setting the three palettes plus high intensity variants on the CGA video card.
 
 Use the following keys:
 
