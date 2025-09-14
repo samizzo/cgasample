@@ -1,4 +1,6 @@
 #include <dos.h>
+#include <mem.h>
+#include <conio.h>
 
 enum Palette
 {
@@ -23,11 +25,11 @@ enum Palette
 
 #define KB_DATA_REGISTER            0x60
 #define KB_ESCAPE_SEQUENCE          0xE0
-#define KB_KEY_ESCAPE               0x01
-#define KB_KEY_0                    0x0B
-#define KB_KEY_1                    0x02
-#define KB_KEY_2                    0x03
-#define KB_KEY_I                    0x17
+#define KB_KEY_ESCAPE               0x1B
+#define KB_KEY_0                    '0'
+#define KB_KEY_1                    '1'
+#define KB_KEY_2                    '2'
+#define KB_KEY_I                    'I'
 #define KB_KEY_UP                   0x48
 #define KB_KEY_DOWN                 0x50
 
@@ -142,10 +144,8 @@ int main()
     unsigned char highIntensity = 0;
     unsigned char backgroundColour = 0;
     unsigned char pattern[VIDEO_MEMORY_SIZE];
-    unsigned char keyBuffer[256];
 
     printf("Initialising");
-    memset(keyBuffer, 0, sizeof(keyBuffer));
     DrawPattern(pattern);
 
     SetCGAPalette(currentPalette, highIntensity, backgroundColour);
@@ -153,30 +153,14 @@ int main()
 
     while (1)
     {
-        unsigned char scancode = inp(KB_DATA_REGISTER);
-        unsigned char key = scancode & 0x7F;
         unsigned char refreshPalette = 0;
+        int key = toupper(getch());
 
-        if (scancode == KB_ESCAPE_SEQUENCE)
+        if (key == KB_ESCAPE_SEQUENCE)
         {
-            // Ignore escape sequences. We'll process the following key next time.
-            continue;
+            // Ignore escape sequences and read the next key code
+            key = getch();
         }
-
-        if (scancode != key)
-        {
-            // Key was released
-            keyBuffer[key] = 0;
-            continue;
-        }
-
-        if (keyBuffer[key])
-        {
-            // Key is already down, ignore repeats
-            continue;
-        }
-
-        keyBuffer[key] = 1;
 
         if (key == KB_KEY_ESCAPE)
             break;
