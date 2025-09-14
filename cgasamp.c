@@ -110,23 +110,20 @@ void SetPixel(unsigned int x, unsigned int y, unsigned char colour, unsigned cha
 void DrawPattern(unsigned char* buffer)
 {
     #define BLOCK_SIZE 20
-    unsigned int x, y;
+    unsigned int x;
     unsigned char colour = 0;
-    for (y = 0; y < 200; y += BLOCK_SIZE)
+    for (x = 0; x < 320; x += BLOCK_SIZE)
     {
-        for (x = 0; x < 320; x += BLOCK_SIZE)
+        unsigned int bx, by;
+        for (by = 0; by < 200; by++)
         {
-            unsigned int bx, by;
-            for (by = y; by < y + BLOCK_SIZE; by++)
+            for (bx = x; bx < x + BLOCK_SIZE; bx++)
             {
-                for (bx = x; bx < x + BLOCK_SIZE; bx++)
-                {
-                    SetPixel(bx, by, colour, buffer);
-                }
+                SetPixel(bx, by, colour, buffer);
             }
-
-            colour = (colour + 1) & 3;
         }
+
+        colour = (colour + 1) & 3;
 
         printf(".");
         fflush(0);
