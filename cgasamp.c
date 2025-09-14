@@ -33,7 +33,7 @@ enum Palette
 #define VIDEO_MODE_320X200_5        0x05    // 320x200, 4 colours, only Palette2 available
 
 // CGA registers
-#define CGA_COLOR_SELECT_REGISTER   0x3D9
+#define CGA_COLOUR_SELECT_REGISTER  0x3D9
 #define CGA_PALETTE_BIT             (1<<5)  // 1 = cyan/magenta/white, 0 = green/red/brown
 #define CGA_PALETTE_INTENSITY_BIT   (1<<4)  // 1 = select high intensity palette, 0 = select low intensity palette
 #define CGA_BACKGROUND_MASK         0x0F    // background colour bits are 0-3 and effectively selects from the 16 colour palette
@@ -128,7 +128,7 @@ char SetCGAPalette(enum Palette palette, char highIntensity, unsigned char backg
     regs.h.bl = value;
     int86(0x10, &regs, &regs);
 #else
-    outp(CGA_COLOR_SELECT_REGISTER, value);
+    outp(CGA_COLOUR_SELECT_REGISTER, value);
 #endif
 
     return modeChanged;
